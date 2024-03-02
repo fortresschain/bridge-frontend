@@ -14,7 +14,7 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 import { cookieStorage, createStorage } from 'wagmi'
-import { Chain, bscTestnet, mainnet, sepolia } from 'wagmi/chains'
+import { Chain, bsc, bscTestnet, mainnet, sepolia } from 'wagmi/chains'
 
 // Get projectId at https://cloud.walletconnect.com
 export const projectId = process.env.NEXT_PUBLIC_VITE_WALLET_CONNECT_PROJECT_ID
@@ -54,7 +54,7 @@ export const fortressChain = {
 
 // Create wagmiConfig
 export const config = defaultWagmiConfig({
-  chains: [bscTestnet], // required
+  chains: [bsc, bscTestnet, whalechain, fortressChain], // required
   projectId, // required
   metadata, // required
   ssr: true,
