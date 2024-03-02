@@ -54,7 +54,7 @@ export const fortressChain = {
 
 // Create wagmiConfig
 export const config = defaultWagmiConfig({
-  chains: [bscTestnet, whalechain, fortressChain], // required
+  chains: [bscTestnet], // required
   projectId, // required
   metadata, // required
   ssr: true,
