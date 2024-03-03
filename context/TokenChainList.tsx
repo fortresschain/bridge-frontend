@@ -20,6 +20,7 @@ export namespace LocationContextType {
       chainName: string;
       chainSymbol: string;
       chainLogo: string;
+      explorerURL: string;
       addressRecieveBridge: string;
       tokens: {
         id: number;
@@ -58,6 +59,7 @@ export namespace LocationContextType {
           chainName: string;
           chainSymbol: string;
           chainLogo: string;
+          explorerURL: string;
           addressRecieveBridge: string;
           tokens: {
             id: number;
@@ -91,6 +93,7 @@ export const TokenChainListProvider: FC<LocationContextType.Input> = ({
       chainName: 'Binance Smart Chain',
       chainSymbol: 'BNB',
       chainLogo: 'https://cryptologos.cc/logos/bnb-bnb-logo.svg',
+      explorerURL: 'https://explorer.whalechain.live/',
       addressRecieveBridge: '0xD18Ea8DB279ea3FEF7821134Bd6538901Ba510E0',
       tokens: [
         {
@@ -118,6 +121,7 @@ export const TokenChainListProvider: FC<LocationContextType.Input> = ({
       chainName: 'Binance Smart Chain Testnet',
       chainSymbol: 'TBNB',
       chainLogo: 'https://cryptologos.cc/logos/binance-coin-bnb-logo.png',
+      explorerURL: 'https://explorer.whalechain.live/',
       addressRecieveBridge: '0xD18Ea8DB279ea3FEF7821134Bd6538901Ba510E0',
       tokens: [
         {
@@ -145,7 +149,8 @@ export const TokenChainListProvider: FC<LocationContextType.Input> = ({
       chainName: 'WhaleChain',
       chainSymbol: 'WHALE',
       chainLogo: 'https://i.ibb.co/XWtRzjZ/icon-round.png',
-      addressRecieveBridge: '0xD18Ea8DB279ea3FEF7821134Bd6538901Ba510E0',
+      explorerURL: 'https://explorer.whalechain.live/',
+      addressRecieveBridge: '0x63592E30fCA183e47dC180ABfdBb5564C0C9FCA0',
       tokens: [
         {
           id: 1,
@@ -172,6 +177,7 @@ export const TokenChainListProvider: FC<LocationContextType.Input> = ({
       chainName: 'FortressChain',
       chainSymbol: 'FORT',
       chainLogo: 'https://i.ibb.co/yNThkbj/Blue-minimalist-whale-tail-logo.png',
+      explorerURL: 'https://explorer.whalechain.live/',
       addressRecieveBridge: '0xD18Ea8DB279ea3FEF7821134Bd6538901Ba510E0',
       tokens: [
         {

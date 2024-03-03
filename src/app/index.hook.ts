@@ -1,12 +1,13 @@
 'use client'
-import { useAccount, useBalance, useSendTransaction, useSwitchChain } from "wagmi";
+import { useAccount, useBalance, useSendTransaction, useSwitchChain, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useTokenChainList } from "../../context/TokenChainList";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { sendTransaction } from "wagmi/actions";
+import { config } from "../../config";
+import abi from './abi.json';
 import { parseEther } from "viem";
 
 type Inputs = {
@@ -16,44 +17,74 @@ type Inputs = {
 }
 
 export const usePage = () => {
+
+  
   const formSchema = z.object({
-    networkFrom: z.string({
-      required_error: "Please select the network"
-    }),
-    networkTo: z.string({
-      required_error: "Please select the network"
-    }),
-    amount: z.string({
-      required_error: "Please enter the amount"
-    })
-  }).refine(data => {
-    return data.networkFrom !== data.networkTo;
-  } , {
-    message: "The source and target networks must be different",
-    path: ["amount"]
-  });
-  const form = useForm<Inputs>({
-    resolver: zodResolver(formSchema),
-    mode: 'onChange',
-  });
-  const { open } = useWeb3Modal();
-  const { data: hash, sendTransaction } = useSendTransaction() 
-  const { switchChain } = useSwitchChain();
-  const { selectedToken, tokensChainList } = useTokenChainList();
+      networkFrom: z.string({
+        required_error: "Please select the network"
+      }),
+      networkTo: z.string({
+        required_error: "Please select the network"
+      }),
+      amount: z.string({
+        required_error: "Please enter the amount"
+      })
+    }).refine(data => {
+      return data.networkFrom !== data.networkTo;
+    } , {
+      message: "The source and target networks must be different",
+      path: ["amount"]
+    });
+
+
+    const { selectedNetworkId } = useWeb3ModalState();
+    const { data: hashApprove, writeContract: writeContractApprove, isPending: isLoadingApprove } = useWriteContract() 
+    const { data: hashSendToken, writeContract: writeContractToken, isPending: isLoadingToken } = useWriteContract() 
+    const form = useForm<Inputs>({
+      resolver: zodResolver(formSchema),
+      mode: 'onChange',
+    });
+    const { open } = useWeb3Modal();
+    const { data: hash, sendTransaction } = useSendTransaction() 
+    const { switchChain } = useSwitchChain();
+    const { selectedToken, tokensChainList } = useTokenChainList();
+    const selectedNetwork = tokensChainList.find((chain) => `${chain.chainId}` === `${selectedNetworkId}` as any);
     const { address, isConnecting, isDisconnected, status, isReconnecting } =
       useAccount();
     const handleSubmit: SubmitHandler<Inputs> = async (data) => {
       try {
-      const to = tokensChainList.find (token => token.chainId === parseInt(data.networkTo));
-      if(to?.addressRecieveBridge)
-        sendTransaction({ to: to?.addressRecieveBridge as any, value: parseEther(data.amount) }, {
-          onError: (error) => {
-            alert(error);
-          },
-          onSuccess: (hash) => {
-            alert(`Transaction sent with hash: ${hash}`);
+        const from = tokensChainList.find (token => token.chainId === parseInt(data.networkFrom));
+        const to = tokensChainList.find (token => token.chainId === parseInt(data.networkTo));
+        if(to?.addressRecieveBridge && selectedToken && selectedToken.address === '0x0000000000000000000000000000000000000000'){
+          sendTransaction({ to: from?.addressRecieveBridge as any, value: parseEther(data.amount) }, {
+            onError: (error) => {
+              alert(error);
+            },
+            onSuccess: (hash) => {
+              alert(`Transaction sent with hash: ${hash}`);
+            }
+          });
+        } else {
+          if(!hashApprove && !isLoadingApprove){
+            writeContractApprove({
+              functionName: 'approve',
+              address: selectedToken?.address as any,
+              args: [from?.addressRecieveBridge, parseEther(data.amount)],
+              // contract: selectedToken?.address as any,
+              value: undefined,
+              abi: abi,
+            });
+          } else if(hashApprove && !isLoadingApprove && !hashSendToken && !isLoadingToken){
+            writeContractToken({
+              functionName: 'transfer',
+              address: selectedToken?.address as any,
+              args: [from?.addressRecieveBridge, parseEther(data.amount)],
+              // contract: selectedToken?.address as any,
+              value: undefined,
+              abi: abi,
+            });
           }
-        });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -73,6 +104,11 @@ export const usePage = () => {
       isDisconnected, 
       status, 
       isReconnecting,
+      hashApprove,
+      hashSendToken,
+      isLoadingToken,
+      isLoadingApprove,
+      selectedNetwork,
       open,
       address,
       selectedToken,

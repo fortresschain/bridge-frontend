@@ -24,6 +24,11 @@ export default function Home() {
     status,
     form,
     onSubmit,
+    hashApprove,
+    selectedNetwork,
+    isLoadingApprove,
+    hashSendToken,
+    isLoadingToken,
     switchChain,
     balanceNative,
   } = usePage();
@@ -235,19 +240,54 @@ export default function Home() {
                 />
               </div>
             )}
-            {status === 'connected' && (
+            {status === 'connected' && hashApprove && selectedToken?.address && selectedToken?.address !== '0x0000000000000000000000000000000000000000' && (
               <div className="mt-5 flex justify-center text-center">
                 <Button
                   size="lg"
                   type="submit"
-                  disabled={!form.formState.isValid}
-                  loading={form.formState.isSubmitting}
+                  disabled={!form.formState.isValid || isLoadingApprove || isLoadingToken}
+                  loading={form.formState.isSubmitting || isLoadingApprove || isLoadingToken}
                   color={'amber'}
                   className="rounded w-full max-w-[44rem] text-center flex justify-center"
                   placeholder={undefined}>
                   EXCHANGE
                 </Button>
               </div>
+            )}
+            {status === 'connected' && !hashApprove && selectedToken?.address && selectedToken?.address !== '0x0000000000000000000000000000000000000000' && (
+              <div className="mt-5 flex justify-center text-center">
+                <Button
+                  size="lg"
+                  type="submit"
+                  disabled={!form.formState.isValid || isLoadingApprove}
+                  loading={form.formState.isSubmitting || isLoadingApprove}
+                  color={'amber'}
+                  className="rounded w-full max-w-[44rem] text-center flex justify-center"
+                  placeholder={undefined}>
+                  APPROVE
+                </Button>
+              </div>
+            )}
+            {status === 'connected' && selectedToken?.address === '0x0000000000000000000000000000000000000000' && (
+              <div className="mt-5 flex justify-center text-center">
+                <Button
+                  size="lg"
+                  type="submit"
+                  disabled={!form.formState.isValid || isLoadingApprove || isLoadingToken}
+                  loading={form.formState.isSubmitting || isLoadingApprove || isLoadingToken}
+                  color={'amber'}
+                  className="rounded w-full max-w-[44rem] text-center flex justify-center"
+                  placeholder={undefined}>
+                  EXCHANGE
+                </Button>
+              </div>
+            )}
+            {hashSendToken && (
+              <h2 className='mt-3'>
+                <a href={`${selectedNetwork?.explorerURL}/tx/${hashSendToken}`} target="_blank" rel="noreferrer">
+                  Transaction sent with hash: {hashSendToken}
+                </a>
+              </h2>
             )}
           </form>
         </div>
