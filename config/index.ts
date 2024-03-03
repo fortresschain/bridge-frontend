@@ -1,22 +1,8 @@
-// import { http, createConfig } from 'wagmi'
-// import { mainnet, sepolia, bscTestnet, bsc } from 'wagmi/chains'
-
-// export const config = createConfig({
-//   chains: [mainnet, sepolia, bscTestnet, bsc],
-//   transports: {
-//     [mainnet.id]: http(),
-//     [sepolia.id]: http(),
-//     [bscTestnet.id]: http(),
-//     [bsc.id]: http(),
-//   },
-// })
-
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 import { cookieStorage, createStorage } from 'wagmi'
 import { Chain, bsc, bscTestnet, mainnet, sepolia } from 'wagmi/chains'
 
-// Get projectId at https://cloud.walletconnect.com
 export const projectId = process.env.NEXT_PUBLIC_VITE_WALLET_CONNECT_PROJECT_ID
 
 if (!projectId) throw new Error('Project ID is not defined')
@@ -25,7 +11,7 @@ const metadata = {
   name: 'WhaleChain',
   description: 'WhaleChain',
   url: 'https://bridge.whalechain.live', // origin must match your domain & subdomain
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
+  icons: ['https://i.ibb.co/XWtRzjZ/icon-round.png']
 }
 
 export const whalechain = {
