@@ -189,6 +189,15 @@ export const TokenChainListProvider: FC<LocationContextType.Input> = ({
           formatedBalance: '0',
           balance: '0',
         },
+        {
+          id: 2,
+          name: 'Tether USD',
+          symbol: 'USDT',
+          logo: 'https://cryptologos.cc/logos/tether-usdt-logo.svg',
+          address: '0x9213D475A4e3d402659b39F39f09D130bA64AFE0',
+          formatedBalance: '0',
+          balance: '0',
+        },
       ],
     },
   ];
