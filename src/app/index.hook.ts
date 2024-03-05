@@ -90,7 +90,7 @@ export const usePage = () => {
               abi: abi,
             });
           } else if(hashApprove && !isLoadingApprove && !hashSendToken && !isLoadingToken){
-            const result = await writeContract(configCore, {
+            const result = await writeContract(configCore as any, {
               abi,
               address: selectedToken?.address as any,
               functionName: 'transfer',
