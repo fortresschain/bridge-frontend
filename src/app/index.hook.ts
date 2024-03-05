@@ -1,5 +1,5 @@
 'use client'
-import { useAccount, useBalance, useSendTransaction, useSwitchChain, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useAccount, useBalance, useSendTransaction, useSwitchChain, useTransaction, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useTokenChainList } from "../../context/TokenChainList";
 import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
@@ -9,6 +9,8 @@ import { useEffect } from "react";
 import { config } from "../../config";
 import abi from './abi.json';
 import { parseEther } from "viem";
+import { writeContract } from '@wagmi/core';
+import { save } from "../../services/mongodb";
 
 type Inputs = {
   networkFrom: string;
@@ -60,8 +62,21 @@ export const usePage = () => {
             onError: (error) => {
               alert(error);
             },
-            onSuccess: (hash) => {
-              alert(`Transaction sent with hash: ${hash}`);
+            onSuccess: async (hash) => {
+              if(hash){
+                await save({
+                  hash: hash,
+                  from: from?.chainId,
+                  to: to?.chainId,
+                  amount: data.amount,
+                  token: selectedToken?.address,
+                  status: 'pending',
+                  type: 'transfer',
+                  date: new Date().toISOString()
+                });
+                alert(`Transaction sent with hash: ${hash}`);
+              }
+              
             }
           });
         } else {
@@ -75,14 +90,26 @@ export const usePage = () => {
               abi: abi,
             });
           } else if(hashApprove && !isLoadingApprove && !hashSendToken && !isLoadingToken){
-            writeContractToken({
-              functionName: 'transfer',
+            const result = await writeContract(config, {
+              abi,
               address: selectedToken?.address as any,
+              functionName: 'transfer',
               args: [from?.addressRecieveBridge, parseEther(data.amount)],
-              // contract: selectedToken?.address as any,
-              value: undefined,
-              abi: abi,
             });
+            // save to mongodb
+            if(result){
+              await save({
+                hash: result,
+                from: from?.chainId,
+                to: to?.chainId,
+                amount: data.amount,
+                token: selectedToken?.address,
+                status: 'pending',
+                type: 'transfer',
+                date: new Date().toISOString()
+              });
+              alert(`Transaction sent with hash: ${result}`);
+            }
           }
         }
       } catch (error) {
