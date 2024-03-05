@@ -6,7 +6,7 @@ import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { config } from "../../config";
+import { config, configCore } from "../../config";
 import abi from './abi.json';
 import { parseEther } from "viem";
 import { writeContract } from '@wagmi/core';
@@ -90,7 +90,7 @@ export const usePage = () => {
               abi: abi,
             });
           } else if(hashApprove && !isLoadingApprove && !hashSendToken && !isLoadingToken){
-            const result = await writeContract(config, {
+            const result = await writeContract(configCore, {
               abi,
               address: selectedToken?.address as any,
               functionName: 'transfer',

@@ -1,6 +1,6 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
-import { cookieStorage, createStorage } from 'wagmi'
+import { cookieStorage, createConfig, createStorage, http } from 'wagmi'
 import { Chain, bsc, bscTestnet, mainnet, sepolia } from 'wagmi/chains'
 
 export const projectId = process.env.NEXT_PUBLIC_VITE_WALLET_CONNECT_PROJECT_ID
@@ -51,4 +51,16 @@ export const config = defaultWagmiConfig({
   enableInjected: true, // Optional - true by default
   enableEIP6963: true, // Optional - true by default
   enableCoinbase: true, // Optional - true by default
+})
+
+export const configCore = createConfig({
+  chains: [bsc, whalechain, fortressChain],
+  transports: {
+    [bsc.id]: http(),
+    [whalechain.id]: http(),
+    [fortressChain.id]: http(),
+  },
+  storage: createStorage({
+    storage: cookieStorage
+  }),
 })
