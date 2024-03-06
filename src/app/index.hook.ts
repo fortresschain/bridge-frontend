@@ -41,7 +41,7 @@ export const usePage = () => {
 
     const { selectedNetworkId } = useWeb3ModalState();
     const { data: hashApprove, writeContract: writeContractApprove, isPending: isLoadingApprove } = useWriteContract() 
-    const { data: hashSendToken, writeContract: writeContractToken, isPending: isLoadingToken } = useWriteContract() 
+    const { data: hashSendToken, writeContract: writeContractToken, isPending: isLoadingToken, writeContractAsync: writeContractAsyncToken } = useWriteContract() 
     const form = useForm<Inputs>({
       resolver: zodResolver(formSchema),
       mode: 'onChange',
@@ -90,26 +90,27 @@ export const usePage = () => {
               abi: abi,
             });
           } else if(hashApprove && !isLoadingApprove && !hashSendToken && !isLoadingToken){
-            // const result = await writeContract(configCore as any, {
-            //   abi,
-            //   address: selectedToken?.address as any,
-            //   functionName: 'transfer',
-            //   args: [from?.addressRecieveBridge, parseEther(data.amount)],
-            // });
+            const result = await writeContractAsyncToken({
+              functionName: 'transfer',
+              address: selectedToken?.address as any,
+              args: [from?.addressRecieveBridge, parseEther(data.amount)],
+              // contract: selectedToken?.address as any,
+              value: undefined,
+              abi: abi,
+            });
             // // save to mongodb
-            // if(result){
-            //   await save({
-            //     hash: result,
-            //     from: from?.chainId,
-            //     to: to?.chainId,
-            //     amount: data.amount,
-            //     token: selectedToken?.address,
-            //     status: 'pending',
-            //     type: 'transfer',
-            //     date: new Date().toISOString()
-            //   });
-            //   alert(`Transaction sent with hash: ${result}`);
-            // }
+            if(result){
+              await save({
+                hash: result,
+                from: from?.chainId,
+                to: to?.chainId,
+                amount: data.amount,
+                token: selectedToken?.address,
+                status: 'pending',
+                type: 'transfer',
+                date: new Date().toISOString()
+              });
+            }
           }
         }
       } catch (error) {
