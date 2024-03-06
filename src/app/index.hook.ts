@@ -6,10 +6,10 @@ import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { config, configCore } from "../../config";
+// import { config } from "../../config";
 import abi from './abi.json';
 import { parseEther } from "viem";
-import { writeContract } from '@wagmi/core';
+// import { writeContract } from '@wagmi/core';
 import { save } from "../../services/mongodb";
 
 type Inputs = {
@@ -90,26 +90,26 @@ export const usePage = () => {
               abi: abi,
             });
           } else if(hashApprove && !isLoadingApprove && !hashSendToken && !isLoadingToken){
-            const result = await writeContract(configCore as any, {
-              abi,
-              address: selectedToken?.address as any,
-              functionName: 'transfer',
-              args: [from?.addressRecieveBridge, parseEther(data.amount)],
-            });
-            // save to mongodb
-            if(result){
-              await save({
-                hash: result,
-                from: from?.chainId,
-                to: to?.chainId,
-                amount: data.amount,
-                token: selectedToken?.address,
-                status: 'pending',
-                type: 'transfer',
-                date: new Date().toISOString()
-              });
-              alert(`Transaction sent with hash: ${result}`);
-            }
+            // const result = await writeContract(configCore as any, {
+            //   abi,
+            //   address: selectedToken?.address as any,
+            //   functionName: 'transfer',
+            //   args: [from?.addressRecieveBridge, parseEther(data.amount)],
+            // });
+            // // save to mongodb
+            // if(result){
+            //   await save({
+            //     hash: result,
+            //     from: from?.chainId,
+            //     to: to?.chainId,
+            //     amount: data.amount,
+            //     token: selectedToken?.address,
+            //     status: 'pending',
+            //     type: 'transfer',
+            //     date: new Date().toISOString()
+            //   });
+            //   alert(`Transaction sent with hash: ${result}`);
+            // }
           }
         }
       } catch (error) {

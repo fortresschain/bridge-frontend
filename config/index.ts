@@ -2,7 +2,7 @@ import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 import { cookieStorage, createConfig, createStorage, http } from 'wagmi'
 import { Chain, bsc } from 'wagmi/chains'
-import corechains from '@wagmi/core/chains'
+// import corechains from '@wagmi/core/chains'
 
 export const projectId = process.env.NEXT_PUBLIC_VITE_WALLET_CONNECT_PROJECT_ID
 
@@ -54,14 +54,14 @@ export const config = defaultWagmiConfig({
   enableCoinbase: true, // Optional - true by default
 })
 
-export const configCore = createConfig({
-  chains: [corechains.bsc, whalechain, fortressChain],
-  transports: {
-    [corechains.bsc.id]: http(),
-    [whalechain.id]: http(),
-    [fortressChain.id]: http(),
-  },
-  storage: createStorage({
-    storage: cookieStorage
-  }),
-})
+// export const configCore = createConfig({
+//   chains: [corechains.bsc, whalechain, fortressChain],
+//   transports: {
+//     [corechains.bsc.id]: http(),
+//     [whalechain.id]: http(),
+//     [fortressChain.id]: http(),
+//   },
+//   storage: createStorage({
+//     storage: cookieStorage
+//   }),
+// })
