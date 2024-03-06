@@ -41,13 +41,13 @@ export const usePage = () => {
 
     const { selectedNetworkId } = useWeb3ModalState();
     const { data: hashApprove, writeContract: writeContractApprove, isPending: isLoadingApprove } = useWriteContract() 
-    const { data: hashSendToken, writeContract: writeContractToken, isPending: isLoadingToken, writeContractAsync: writeContractAsyncToken } = useWriteContract() 
+    const { data: hashSendToken, isPending: isLoadingToken, writeContractAsync: writeContractAsyncToken } = useWriteContract() 
     const form = useForm<Inputs>({
       resolver: zodResolver(formSchema),
       mode: 'onChange',
     });
     const { open } = useWeb3Modal();
-    const { data: hash, sendTransaction } = useSendTransaction() 
+    const { data: hashSendTransaction, sendTransaction } = useSendTransaction() 
     const { switchChain } = useSwitchChain();
     const { selectedToken, tokensChainList } = useTokenChainList();
     const selectedNetwork = tokensChainList.find((chain) => `${chain.chainId}` === `${selectedNetworkId}` as any);
@@ -74,7 +74,6 @@ export const usePage = () => {
                   type: 'transfer',
                   date: new Date().toISOString()
                 });
-                alert(`Transaction sent with hash: ${hash}`);
               }
               
             }
@@ -134,6 +133,7 @@ export const usePage = () => {
       isReconnecting,
       hashApprove,
       hashSendToken,
+      hashSendTransaction,
       isLoadingToken,
       isLoadingApprove,
       selectedNetwork,

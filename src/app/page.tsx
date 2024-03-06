@@ -28,6 +28,7 @@ export default function Home() {
     selectedNetwork,
     isLoadingApprove,
     hashSendToken,
+    hashSendTransaction,
     isLoadingToken,
     switchChain,
     balanceNative,
@@ -282,10 +283,10 @@ export default function Home() {
                 </Button>
               </div>
             )}
-            {hashSendToken && (
+            {hashSendToken || hashSendTransaction && (
               <h2 className='mt-3'>
-                <a href={`${selectedNetwork?.explorerURL}/tx/${hashSendToken}`} target="_blank" rel="noreferrer">
-                  Transaction sent with hash: {hashSendToken}
+                <a href={`${selectedNetwork?.explorerURL}/tx/${hashSendToken ?? hashSendTransaction}`} target="_blank" rel="noreferrer">
+                  Transaction sent with hash: {hashSendToken ?? hashSendTransaction}
                 </a>
               </h2>
             )}
